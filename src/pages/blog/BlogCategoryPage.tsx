@@ -1,0 +1,55 @@
+import { useParams, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { FiArrowLeft } from 'react-icons/fi';
+import BlogPostCard from '../../components/blog/BlogPostCard';
+import { BlogPost } from '../../lib/types';
+import { ROUTES } from '../../lib/constants/routes';
+
+export default function BlogCategoryPage() {
+  const { slug } = useParams<{ slug: string }>();
+
+  // Mock data
+  const mockPosts: BlogPost[] = [];
+
+  return (
+    <div className="min-h-screen py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Link
+          to={ROUTES.BLOG}
+          className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mb-8"
+        >
+          <FiArrowLeft className="h-4 w-4" />
+          Back to Blog
+        </Link>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mb-8"
+        >
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4 capitalize">
+            {slug}
+          </h1>
+        </motion.div>
+
+        {mockPosts.length === 0 ? (
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-12 text-center">
+            <p className="text-gray-600 dark:text-gray-400">No posts in this category yet.</p>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {mockPosts
+              .filter((post) => post.category === slug)
+              .map((post) => (
+                <Link key={post.id} to={ROUTES.BLOG_POST(post.id)}>
+                  <BlogPostCard post={post} />
+                </Link>
+              ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
